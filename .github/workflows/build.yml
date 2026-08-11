@@ -1,0 +1,33 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Build image
+        run: docker build -t deploy-demo-app:ci .
+
+      - name: Start container
+        run: docker run -d --name app -p 8080:8080 deploy-demo-app:ci
+
+      - name: Health check
+        run: |
+          for i in $(seq 1 20); do
+            if curl -fsS http://localhost:8080/healthz; then echo; exit 0; fi
+            sleep 1
+          done
+          echo "::error::/healthz never returned 200"
+          docker logs app
+          exit 1
+
+      - name: Tear down
+        if: always()
+        run: docker rm -f app || true
