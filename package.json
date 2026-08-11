@@ -1,0 +1,14 @@
+{
+  "name": "deploy-demo-app",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Dockerized demo web app — deploy-target fixture for the Strata Deploy track.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "license": "UNLICENSED"
+}
